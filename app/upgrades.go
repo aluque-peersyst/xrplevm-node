@@ -71,6 +71,7 @@ func (app *App) setupUpgradeHandlers() {
 			app.configurator,
 			app.ICAHostKeeper,
 			app.StakingKeeper,
+			app.GovKeeper.Params,
 		),
 	)
 
