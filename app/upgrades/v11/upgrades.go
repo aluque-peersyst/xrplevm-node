@@ -15,6 +15,7 @@ func CreateUpgradeHandler(
 	configurator module.Configurator,
 	icaHostKeeper ICAHostKeeper,
 	stakingKeeper StakingKeeper,
+	govParams GovParamsStore,
 ) upgradetypes.UpgradeHandler {
 	return func(c context.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx := sdk.UnwrapSDKContext(c)
@@ -35,6 +36,18 @@ func CreateUpgradeHandler(
 		stakingParams.UnbondingTime = 7 * 24 * time.Hour
 
 		if err := stakingKeeper.SetParams(c, stakingParams); err != nil {
+			return nil, err
+		}
+
+		govParamsValue, err := govParams.Get(c)
+		if err != nil {
+			return nil, err
+		}
+
+		votingPeriod := 7 * 24 * time.Hour
+		govParamsValue.VotingPeriod = &votingPeriod
+
+		if err := govParams.Set(c, govParamsValue); err != nil {
 			return nil, err
 		}
 

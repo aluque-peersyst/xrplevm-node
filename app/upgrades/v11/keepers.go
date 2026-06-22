@@ -4,6 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	icahosttypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/types"
 )
@@ -19,4 +20,11 @@ type ICAHostKeeper interface {
 type StakingKeeper interface {
 	GetParams(ctx context.Context) (params stakingtypes.Params, err error)
 	SetParams(ctx context.Context, params stakingtypes.Params) error
+}
+
+// GovParamsStore is the narrow interface required by the v11 upgrade
+// handler. It matches govkeeper.Keeper.Params.
+type GovParamsStore interface {
+	Get(ctx context.Context) (govv1.Params, error)
+	Set(ctx context.Context, params govv1.Params) error
 }
